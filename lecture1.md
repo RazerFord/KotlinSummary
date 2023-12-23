@@ -91,7 +91,7 @@ val address = Address()
 println(address.name)
 ```
 
-Для свойств можно задать `getter` и `setter`:
+Для свойств можно задать `getter` и `setter`. В этих методах, чтобы обращаться к значению поля используют `field`:
 ```kotlin
 var <propertyName>[: <PropertyType>] [= <property_initializer>]
     [<getter>]
@@ -99,12 +99,45 @@ var <propertyName>[: <PropertyType>] [= <property_initializer>]
 ```
 ```kotlin
 class Rectangle(val width: Int, val height: Int) {
-    val area: Int
+    val area: Int // с помощью field можно получить доступ к значению
         get() = this.width * this.height // тип свойства необязателен, поскольку он может быть выведен из возвращаемого типа геттера
-        set() = ...
+        set(x: Int) = ...
 }
 ```
 
+Бывает, что в классе есть свойство с именем `field`, чтобы к нему обратиться в `get`-методе, можно через `this.field`
+
+Если обратиться к себе же, то будет рекурсия
+
+```kotlin
+class Test {
+    var x: Any
+        get() = x
+        set(o: Any) {
+            x = o
+        }
+}
+```
+```kotlin
+class Test {
+    val x: Int = 123
+        get() = 12 // нельзя
+}
+```
+
+```kotlin
+class Test {
+    val x: Int = 123
+        get() = field // можно
+}
+```
+
+```kotlin
+class Test {
+    val x: Int = 123
+        get() = 12 + field * 0 // можно
+}
+```
 ### Range
 
 ```kotlin
